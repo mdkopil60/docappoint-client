@@ -1,26 +1,61 @@
-import Image from 'next/image';
-import Link from 'next/link';
+"use client";
 
-const Navber = () => {
+import Link from "next/link";
+import { Button } from "@heroui/react";
+
+const Navbar = () => {
     return (
-        <nav className='flex justify-between p-5'>
-            <div>
-               <h1 className='font-bold text-3xl'><span className='text-cyan-300'>Doc</span>Appoint</h1>
+        <nav className="bg-white shadow-sm border-b">
+            <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+
+                {/* Logo */}
+                <Link href="/">
+                    <h1 className="text-3xl font-bold text-cyan-500">
+                        DocAppoint
+                    </h1>
+                </Link>
+
+                {/* Nav Links */}
+                <div className="hidden md:flex items-center gap-8 font-medium">
+
+                    <Link href="/">Home</Link>
+
+                    <Link href="/all-appointments">
+                        All Appointment
+                    </Link>
+
+                    <Link href="/dashboard">
+                        Dashboard
+                    </Link>
+                    <Link href="/add-destination">
+                        Add Data
+                    </Link>
+
+                </div>
+
+                {/* Auth Buttons */}
+                <div className="flex items-center gap-3">
+
+                    <Link href="/login">
+                        <Button
+                            variant="bordered"
+                            className="border-cyan-500 text-cyan-500"
+                        >
+                            Login
+                        </Button>
+                    </Link>
+
+                    <Link href="/register">
+                        <Button className="bg-cyan-500 text-white">
+                            Register
+                        </Button>
+                    </Link>
+
+                </div>
+
             </div>
-
-            <ul className='flex gap-4'>
-                <li><Link href={"/"}>Home</Link></li>
-                <li><Link href={"/destinations"}>All Appointment</Link></li>
-                <li><Link href={"/my-bookings"}>Dashbord</Link></li>
-            </ul>
-
-
-            <ul className='flex gap-4'>
-                <li><Link href={"/login"}>Login</Link></li>
-                <li><Link href={"/signup"}>Sign Up</Link></li>
-            </ul>
         </nav>
     );
-}
+};
 
-export default Navber;
+export default Navbar;

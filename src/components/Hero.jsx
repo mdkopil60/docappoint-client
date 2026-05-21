@@ -1,27 +1,64 @@
-import React from 'react';
+"use client";
+
+import Link from "next/link";
+import { Button } from "@heroui/react";
 
 const Hero = () => {
-    return (
-        <div
-            className="hero min-h-screen"
-            style={{
-                backgroundImage:
-                    "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
-            }}
-        >
-            <div className="hero-overlay"></div>
-            <div className="hero-content text-neutral-content text-center">
-                <div className="max-w-md">
-                    <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-                    <p className="mb-5">
-                        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                        quasi. In deleniti eaque aut repudiandae et a id nisi.
-                    </p>
-                    <button className="btn btn-primary">Get Started</button>
-                </div>
-            </div>
+  return (
+    <section className="bg-gradient-to-r from-cyan-500 to-blue-600 min-h-[85vh] flex items-center">
+
+      <div className="max-w-7xl mx-auto px-5 grid md:grid-cols-2 gap-10 items-center">
+
+        {/* Left */}
+        <div className="space-y-6 text-white">
+
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+            Find Trusted Doctors & Book Appointments
+          </h1>
+
+          <p className="text-lg text-gray-100">
+            Search experienced specialists, view schedules,
+            and book appointments online instantly.
+          </p>
+
+          <div className="flex gap-4">
+
+            <Link href="/all-appointments">
+              <Button
+                size="lg"
+                className="bg-white text-cyan-600 font-semibold"
+              >
+                Get Started
+              </Button>
+            </Link>
+
+            <Button
+              size="lg"
+              variant="bordered"
+              className="border-white text-white"
+            >
+              Learn More
+            </Button>
+
+          </div>
+
         </div>
-    );
+
+        {/* Right */}
+        <div>
+
+          <img
+            src="https://i.ibb.co/4pDNDk1/doctor-banner.png"
+            alt="doctor"
+            className="w-full"
+          />
+
+        </div>
+
+      </div>
+
+    </section>
+  );
 };
 
 export default Hero;
