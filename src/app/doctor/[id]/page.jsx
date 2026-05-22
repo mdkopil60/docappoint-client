@@ -1,96 +1,174 @@
+// app/doctor/[id]/page.jsx
+
+import { Button } from "@heroui/react";
 import Link from "next/link";
 
 const DocAppointDetailsPage = async ({ params }) => {
 
-    const resolvedParams = await params;
-    const id = resolvedParams.id;
+    const { id } = await params;
 
+    // Fetch Doctor Data
     const res = await fetch(
         `http://localhost:5000/all-appointments/${id}`,
         {
             cache: "no-store",
         }
     );
+
+    // Error Handling
     if (!res.ok) {
-        throw new Error("Failed to fetch doctor");
+
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+
+                <h1 className="text-4xl font-bold text-red-500">
+                    Doctor Not Found
+                </h1>
+
+            </div>
+        );
     }
+
     const data = await res.json();
 
     return (
-        <div className="max-w-5xl mx-auto p-10">
 
-            <div className="grid md:grid-cols-2 gap-10">
+        <div className="max-w-6xl mx-auto px-4 py-12">
 
-                <img
-                    src={data?.image}
-                    alt={data?.name}
-                    className="w-full rounded-2xl"
-                />
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
 
-                <div>
+                <div className="grid grid-cols-1 md:grid-cols-2">
 
-                    <h1 className="text-4xl font-bold mb-3">
-                        {data?.name}
-                    </h1>
+                    {/* Doctor Image */}
+                    <div className="bg-gray-100">
 
-                    <p className="text-blue-600 text-xl mb-4">
-                        {data?.specialty}
-                    </p>
+                        <img
+                            src={data?.image}
+                            alt={data?.name}
+                            className="w-full h-[500px] object-cover"
+                        />
 
-                    <p className="mb-3">
-                        <span className="font-semibold">
-                            Experience:
-                        </span>{" "}
-                        {data?.experience}
-                    </p>
-
-                    <p className="mb-3">
-                        <span className="font-semibold">
-                            Hospital:
-                        </span>{" "}
-                        {data?.hospital}
-                    </p>
-
-                    <p className="mb-3">
-                        <span className="font-semibold">
-                            Location:
-                        </span>{" "}
-                        {data?.location}
-                    </p>
-
-                    <p className="mb-3">
-                        <span className="font-semibold">
-                            Fee:
-                        </span>{" "}
-                        ৳ {data?.fee}
-                    </p>
-
-                    <div className="mb-5">
-                        <h3 className="font-bold mb-2">
-                            Availability
-                        </h3>
-
-                        {/* {
-                            data?.availability?.map((time, index) => (
-                                <span
-                                    key={index}
-                                    className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full mr-2 mb-2"
-                                >
-                                    {time}
-                                </span>
-                            ))
-                        } */}
                     </div>
 
-                    <p className="text-gray-600 mb-6">
-                        {data?.description}
-                    </p>
+                    {/* Doctor Info */}
+                    <div className="p-8 md:p-10 flex flex-col justify-center">
 
-                   <Link href={"/book-appintment"}>
-                    <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700">
-                        Book Appointment
-                    </button>
-                   </Link>
+                        {/* Name */}
+                        <h1 className="text-4xl font-extrabold text-gray-800 mb-3">
+                            {data?.name}
+                        </h1>
+
+                        {/* Specialty */}
+                        <div className="mb-6">
+
+                            <span className="bg-blue-100 text-blue-700 px-5 py-2 rounded-full text-sm font-semibold">
+                                {data?.specialty}
+                            </span>
+
+                        </div>
+
+                        {/* Doctor Details */}
+                        <div className="space-y-4 text-[17px]">
+
+                            <p className="text-gray-700">
+                                <span className="font-bold text-black">
+                                    Experience:
+                                </span>{" "}
+                                {data?.experience}
+                            </p>
+
+                            <p className="text-gray-700">
+                                <span className="font-bold text-black">
+                                    Hospital:
+                                </span>{" "}
+                                {data?.hospital}
+                            </p>
+
+                            <p className="text-gray-700">
+                                <span className="font-bold text-black">
+                                    Location:
+                                </span>{" "}
+                                {data?.location}
+                            </p>
+
+                            <p className="text-gray-700">
+                                <span className="font-bold text-black">
+                                    Consultation Fee:
+                                </span>{" "}
+                                <span className="text-green-600 font-bold text-xl">
+                                    ৳ {data?.fee}
+                                </span>
+                            </p>
+
+                        </div>
+
+                        {/* Availability */}
+                        <div className="mt-8">
+
+                            <h3 className="text-2xl font-bold text-black">
+                                Availability
+                            </h3>
+
+                            <div className="flex flex-wrap gap-3">
+
+                                {
+                                    Array.isArray(data?.availability) ? (
+
+                                        data?.availability?.map((time, index) => (
+
+                                            <span
+                                                key={index}
+                                                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-black px-4 py-2 rounded-full text-sm font-medium shadow"
+                                            >
+                                                {time}
+                                            </span>
+
+                                        ))
+
+                                    ) : (
+
+                                        <span
+                                            className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow"
+                                        >
+                                            {data?.availability}
+                                        </span>
+
+                                    )
+                                }
+
+                            </div>
+
+                        </div>
+
+                        {/* About Doctor */}
+                        <div className="mt-8">
+
+                            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                                About Doctor
+                            </h3>
+
+                            <p className="text-gray-600 leading-7">
+                                {data?.description}
+                            </p>
+
+                        </div>
+
+                        {/* Button */}
+                        <div className="mt-10">
+
+                            <Link href={`/book-appointment/${data?._id}`}>
+
+                                <Button
+                                    className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-cyan-500 text-black font-bold px-8 py-6 rounded-2xl shadow-lg hover:scale-105 transition duration-300"
+                                >
+                                    Book Appointment
+                                </Button>
+
+                            </Link>
+
+                        </div>
+
+                    </div>
 
                 </div>
 

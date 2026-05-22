@@ -48,7 +48,7 @@ const Hero = () => {
         <div>
 
           <img
-            src="https://i.ibb.co/4pDNDk1/doctor-banner.png"
+            src="https://cdn.pixabay.com/photo/2017/03/22/19/07/child-2166079_960_720.jpg"
             alt="doctor"
             className="w-full"
           />
