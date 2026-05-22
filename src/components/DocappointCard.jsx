@@ -5,7 +5,7 @@ import Link from "next/link";
 const DocappointCard = ({ docAppoint }) => {
 
     const {
-        id,
+        _id,
         image,
         name,
         specialty,
@@ -111,7 +111,7 @@ const DocappointCard = ({ docAppoint }) => {
                 {/* Button */}
                 <div className="mt-auto pt-8">
 
-                    <Link href={`/doctor/${id}`}>
+                    <Link href= {`/doctor/${_id}`}>
 
                         <button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-4 rounded-2xl transition duration-300 shadow-md hover:shadow-xl">
 
