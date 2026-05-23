@@ -32,7 +32,7 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            toast.success("Login Successful 🔥");
+            toast.success("Login Successful ");
             router.push(from);
         } catch (error) {
             toast.error("Invalid Email or Password");

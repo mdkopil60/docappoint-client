@@ -116,7 +116,7 @@ export default function Hero() {
 
                       <Button
                         as={Link}
-                        href="/all-appointments"
+                        href="/book-appointment"
                         className="bg-cyan-500 hover:bg-cyan-400 text-white px-8 py-6 rounded-xl text-base font-semibold"
                         endContent={<ArrowRight size={18} />}
                       >
@@ -125,7 +125,7 @@ export default function Hero() {
 
                       <Button
                         as={Link}
-                        href="/all-appointments"
+                        href="/book-appointment"
                         variant="bordered"
                         className="border-white text-white hover:bg-white/10 px-8 py-6 rounded-xl text-base"
                       >

@@ -18,100 +18,87 @@ import {
     FiCheckCircle,
 } from "react-icons/fi";
 
+import { authClient } from "@/lib/auth-client";
+
 export default function RegisterPage() {
     const router = useRouter();
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const [passwordError, setPasswordError] = useState("");
-    const [passwordStrength, setPasswordStrength] = useState("");
-
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        photoUrl: "",
+        image: "",
         password: "",
     });
+
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        setFormData({
-            ...formData,
+        setFormData((prev) => ({
+            ...prev,
             [name]: value,
-        });
-
-        if (name === "password") {
-            setPasswordError("");
-
-            if (
-                value.length >= 6 &&
-                /[A-Z]/.test(value) &&
-                /[a-z]/.test(value)
-            ) {
-                setPasswordStrength("Strong");
-            } else if (value.length > 0) {
-                setPasswordStrength("Weak");
-            } else {
-                setPasswordStrength("");
-            }
-        }
+        }));
     };
 
-    const validatePassword = (password) => {
-        if (password.length < 6) {
-            return "Minimum 6 characters required";
-        }
-
-        if (!/[A-Z]/.test(password)) {
-            return "Must include one uppercase letter";
-        }
-
-        if (!/[a-z]/.test(password)) {
-            return "Must include one lowercase letter";
-        }
-
-        return "";
-    };
-
-    const handleRegister = async (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
 
-        const errorMsg = validatePassword(formData.password);
-
-        if (errorMsg) {
-            setPasswordError(errorMsg);
-            return;
-        }
+        setLoading(true);
 
         try {
-            toast.success("Account Created Successfully 🎉");
-            router.push("/login");
-        } catch (error) {
-            toast.error("Registration Failed");
+            // Password Validation
+            if (formData.password.length < 6) {
+                toast.error("Password must be at least 6 characters");
+                setLoading(false);
+                return;
+            }
+
+            const { data, error } = await authClient.signUp.email({
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                image: formData.image,
+            });
+
+            console.log(data);
+            console.log(error);
+
+            if (error) {
+                toast.error(error.message || "Registration Failed");
+                setLoading(false);
+                return;
+            }
+
+            toast.success("Account Created Successfully");
+
+            router.push("/");
+        } catch (err) {
+            console.log(err);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="min-h-screen bg-[#00839b] flex items-center justify-center px-4 py-10 relative overflow-hidden">
-
-            {/* Background Effects */}
+            {/* Background Blur */}
             <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl"></div>
 
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-sky-300/20 rounded-full blur-3xl"></div>
 
-            {/* Main Card */}
+            {/* Card */}
             <div className="relative z-10 bg-white w-full max-w-lg rounded-[30px] shadow-2xl p-8 md:p-10 border border-white/40">
-
                 {/* Header */}
                 <div className="text-center mb-8">
-
-                    {/* Icon */}
                     <div className="w-28 h-28 mx-auto rounded-3xl bg-gradient-to-br from-cyan-100 to-sky-100 flex items-center justify-center shadow-inner border border-cyan-100 text-5xl">
                         🏥
                     </div>
 
-                    <h1 className="mt-5 text-4xl font-bold text-slate-800 leading-tight">
+                    <h1 className="mt-5 text-4xl font-bold text-slate-800">
                         Create Account
                     </h1>
 
@@ -121,9 +108,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleRegister} className="space-y-5">
-
-                    {/* Full Name */}
+                <form onSubmit={onSubmit} className="space-y-5">
+                    {/* Name */}
                     <div className="relative">
                         <FiUser
                             size={20}
@@ -137,7 +123,7 @@ export default function RegisterPage() {
                             value={formData.name}
                             onChange={handleInputChange}
                             placeholder="Full Name"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
                         />
                     </div>
 
@@ -155,11 +141,11 @@ export default function RegisterPage() {
                             value={formData.email}
                             onChange={handleInputChange}
                             placeholder="Email Address"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
                         />
                     </div>
 
-                    {/* Photo URL */}
+                    {/* Image */}
                     <div className="relative">
                         <FiCamera
                             size={20}
@@ -168,12 +154,12 @@ export default function RegisterPage() {
 
                         <input
                             type="url"
-                            name="photoUrl"
+                            name="image"
                             required
-                            value={formData.photoUrl}
+                            value={formData.image}
                             onChange={handleInputChange}
                             placeholder="Profile Photo URL"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
                         />
                     </div>
 
@@ -191,67 +177,33 @@ export default function RegisterPage() {
                             value={formData.password}
                             onChange={handleInputChange}
                             placeholder="Password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-24 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-20 text-sm outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
                         />
 
-                        {/* Show Password */}
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-14 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-600 transition-all"
+                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500"
                         >
                             {showPassword ? (
-                                <FiEyeOff size={18} />
+                                <FiEyeOff size={20} />
                             ) : (
-                                <FiEye size={18} />
+                                <FiEye size={20} />
                             )}
                         </button>
-
-                        {/* Strength */}
-                        {passwordStrength && (
-                            <span
-                                className={`absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold ${passwordStrength === "Strong"
-                                    ? "text-emerald-600"
-                                    : "text-orange-500"
-                                    }`}
-                            >
-                                {passwordStrength}
-                            </span>
-                        )}
                     </div>
 
-                    {/* Error */}
-                    {passwordError && (
-                        <p className="text-red-500 text-sm font-medium px-1">
-                            ⚠️ {passwordError}
-                        </p>
-                    )}
-
-                    {/* Terms */}
-                    <p className="text-xs text-center text-slate-500 leading-relaxed">
-                        By continuing you agree to our{" "}
-                        <span className="text-cyan-600 font-semibold hover:underline cursor-pointer">
-                            Terms
-                        </span>{" "}
-                        and{" "}
-                        <span className="text-cyan-600 font-semibold hover:underline cursor-pointer">
-                            Privacy Policy
-                        </span>
-                    </p>
-
-                    {/* Button */}
+                    {/* Submit */}
                     <button
                         type="submit"
-                        className="w-full bg-[#00667a] hover:bg-[#005464] text-white rounded-2xl py-4 font-bold transition-all shadow-lg hover:shadow-cyan-200/50 active:scale-[0.98]"
+                        disabled={loading}
+                        className="w-full bg-[#00667a] hover:bg-[#005464] text-white rounded-2xl py-4 font-bold transition-all shadow-lg"
                     >
                         <div className="flex items-center justify-center gap-2 text-sm uppercase tracking-wide">
-                            Create Account
+                            {loading ? "Creating..." : "Create Account"}
+
                             <FiCheckCircle size={18} />
                         </div>
-
-                        <p className="text-[11px] mt-1 font-normal opacity-90">
-                            Start your healthcare journey
-                        </p>
                     </button>
                 </form>
 
@@ -259,20 +211,19 @@ export default function RegisterPage() {
                 <div className="flex items-center gap-3 my-7">
                     <div className="flex-1 h-px bg-slate-200"></div>
 
-                    <span className="text-xs uppercase text-slate-400 font-semibold tracking-wider">
+                    <span className="text-xs uppercase text-slate-400 font-semibold">
                         Or Continue With
                     </span>
 
                     <div className="flex-1 h-px bg-slate-200"></div>
                 </div>
 
-                {/* Social Buttons */}
+                {/* Social */}
                 <div className="grid grid-cols-2 gap-4">
-
                     <button
                         type="button"
                         onClick={() => toast.success("Google Signup")}
-                        className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 hover:border-cyan-300 text-slate-700 py-3 rounded-2xl transition-all font-semibold text-sm"
+                        className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 py-3 rounded-2xl transition-all font-semibold text-sm"
                     >
                         <FcGoogle size={20} />
                         Google
@@ -281,7 +232,7 @@ export default function RegisterPage() {
                     <button
                         type="button"
                         onClick={() => toast.success("GitHub Signup")}
-                        className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 hover:border-slate-400 text-slate-700 py-3 rounded-2xl transition-all font-semibold text-sm"
+                        className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 py-3 rounded-2xl transition-all font-semibold text-sm"
                     >
                         <FaGithub size={20} />
                         GitHub
