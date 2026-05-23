@@ -38,7 +38,7 @@ const AddDoctorPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                     {/* Doctor ID */}
-                    <TextField name="id" isRequired>
+                    {/* <TextField name="id" isRequired>
                         <Label>Doctor ID</Label>
 
                         <Input
@@ -47,7 +47,7 @@ const AddDoctorPage = () => {
                         />
 
                         <FieldError />
-                    </TextField>
+                    </TextField> */}
 
                     {/* Doctor Name */}
                     <TextField name="name" isRequired>

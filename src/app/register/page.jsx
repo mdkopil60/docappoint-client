@@ -4,12 +4,25 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { FcGoogle as GoogleIcon } from "react-icons/fc";
+
+import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { FiUser, FiMail, FiCamera, FiLock, FiCheckCircle } from "react-icons/fi";
+
+import {
+    FiUser,
+    FiMail,
+    FiCamera,
+    FiLock,
+    FiEye,
+    FiEyeOff,
+    FiCheckCircle,
+} from "react-icons/fi";
 
 export default function RegisterPage() {
     const router = useRouter();
+
+    const [showPassword, setShowPassword] = useState(false);
+
     const [passwordError, setPasswordError] = useState("");
     const [passwordStrength, setPasswordStrength] = useState("");
 
@@ -17,17 +30,25 @@ export default function RegisterPage() {
         name: "",
         email: "",
         photoUrl: "",
-        password: ""
+        password: "",
     });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
 
         if (name === "password") {
             setPasswordError("");
-            // পাসওয়ার্ড স্ট্রেন্থ লাইভ চেক
-            if (value.length >= 6 && /[A-Z]/.test(value) && /[a-z]/.test(value)) {
+
+            if (
+                value.length >= 6 &&
+                /[A-Z]/.test(value) &&
+                /[a-z]/.test(value)
+            ) {
                 setPasswordStrength("Strong");
             } else if (value.length > 0) {
                 setPasswordStrength("Weak");
@@ -38,101 +59,242 @@ export default function RegisterPage() {
     };
 
     const validatePassword = (password) => {
-        if (password.length < 6) return "Minimum 6 characters required.";
-        if (!/[A-Z]/.test(password)) return "Must include 1 uppercase letter.";
-        if (!/[a-z]/.test(password)) return "Must include 1 lowercase letter.";
+        if (password.length < 6) {
+            return "Minimum 6 characters required";
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            return "Must include one uppercase letter";
+        }
+
+        if (!/[a-z]/.test(password)) {
+            return "Must include one lowercase letter";
+        }
+
         return "";
     };
 
     const handleRegister = async (e) => {
         e.preventDefault();
+
         const errorMsg = validatePassword(formData.password);
+
         if (errorMsg) {
             setPasswordError(errorMsg);
             return;
         }
 
         try {
-            toast.success("Profile created! Redirecting to login...");
+            toast.success("Account Created Successfully 🎉");
             router.push("/login");
         } catch (error) {
-            toast.error("Registration failed!");
+            toast.error("Registration Failed");
         }
     };
 
     return (
-        <div className="min-h-screen bg-[#eaf2f8] relative flex flex-col items-center justify-center p-4 overflow-hidden">
-            {/* ওয়াটারমার্ক ব্যাকগ্রাউন্ড প্যাটার্ন */}
-            <div className="absolute inset-0 opacity-[0.06] pointer-events-none select-none bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        <div className="min-h-screen bg-[#00839b] flex items-center justify-center px-4 py-10 relative overflow-hidden">
 
-            <div className="bg-white px-6 py-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-slate-100 max-w-md w-full relative z-10 my-6">
+            {/* Background Effects */}
+            <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl"></div>
 
-                {/* টপ টিম ইলাস্ট্রেশন placeholder */}
-                <div className="flex flex-col items-center mb-5">
-                    <div className="w-44 h-24 bg-teal-50 rounded-2xl flex items-center justify-center text-4xl border border-teal-100 shadow-inner">
-                        👥🏥
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-sky-300/20 rounded-full blur-3xl"></div>
+
+            {/* Main Card */}
+            <div className="relative z-10 bg-white w-full max-w-lg rounded-[30px] shadow-2xl p-8 md:p-10 border border-white/40">
+
+                {/* Header */}
+                <div className="text-center mb-8">
+
+                    {/* Icon */}
+                    <div className="w-28 h-28 mx-auto rounded-3xl bg-gradient-to-br from-cyan-100 to-sky-100 flex items-center justify-center shadow-inner border border-cyan-100 text-5xl">
+                        🏥
                     </div>
-                    <h2 className="text-2xl font-extrabold text-slate-800 mt-4 text-center tracking-tight">Create your unique DocAppoint profile</h2>
+
+                    <h1 className="mt-5 text-4xl font-bold text-slate-800 leading-tight">
+                        Create Account
+                    </h1>
+
+                    <p className="mt-2 text-slate-500 text-sm">
+                        Join DocAppoint and manage appointments easily
+                    </p>
                 </div>
 
-                <form onSubmit={handleRegister} className="space-y-3.5">
+                {/* Form */}
+                <form onSubmit={handleRegister} className="space-y-5">
+
+                    {/* Full Name */}
                     <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><FiUser size={18} /></span>
-                        <input type="text" name="name" required value={formData.name} onChange={handleInputChange} placeholder="Full Name" className="w-full bg-white text-slate-800 border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm focus:border-teal-600 focus:ring-2 focus:ring-teal-100 outline-none transition-all" />
+                        <FiUser
+                            size={20}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            placeholder="Full Name"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                        />
                     </div>
 
+                    {/* Email */}
                     <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><FiMail size={18} /></span>
-                        <input type="email" name="email" required value={formData.email} onChange={handleInputChange} placeholder="Email Address" className="w-full bg-white text-slate-800 border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm focus:border-teal-600 focus:ring-2 focus:ring-teal-100 outline-none transition-all" />
+                        <FiMail
+                            size={20}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            placeholder="Email Address"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                        />
                     </div>
 
+                    {/* Photo URL */}
                     <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><FiCamera size={18} /></span>
-                        <input type="url" name="photoUrl" required value={formData.photoUrl} onChange={handleInputChange} placeholder="Profile Photo URL" className="w-full bg-white text-slate-800 border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm focus:border-teal-600 focus:ring-2 focus:ring-teal-100 outline-none transition-all" />
+                        <FiCamera
+                            size={20}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+
+                        <input
+                            type="url"
+                            name="photoUrl"
+                            required
+                            value={formData.photoUrl}
+                            onChange={handleInputChange}
+                            placeholder="Profile Photo URL"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                        />
                     </div>
 
+                    {/* Password */}
                     <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><FiLock size={18} /></span>
-                        <input type="password" name="password" required value={formData.password} onChange={handleInputChange} placeholder="Password" className="w-full bg-white text-slate-800 border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm focus:border-teal-600 focus:ring-2 focus:ring-teal-100 outline-none transition-all" />
+                        <FiLock
+                            size={20}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            required
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            placeholder="Password"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-24 text-sm text-slate-800 outline-none focus:bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all"
+                        />
+
+                        {/* Show Password */}
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-14 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-600 transition-all"
+                        >
+                            {showPassword ? (
+                                <FiEyeOff size={18} />
+                            ) : (
+                                <FiEye size={18} />
+                            )}
+                        </button>
+
+                        {/* Strength */}
                         {passwordStrength && (
-                            <span className={`absolute right-3 top-3.5 text-[11px] font-bold ${passwordStrength === "Strong" ? "text-emerald-600" : "text-amber-500"}`}>
+                            <span
+                                className={`absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold ${passwordStrength === "Strong"
+                                    ? "text-emerald-600"
+                                    : "text-orange-500"
+                                    }`}
+                            >
                                 {passwordStrength}
                             </span>
                         )}
                     </div>
 
+                    {/* Error */}
                     {passwordError && (
-                        <p className="text-red-500 text-xs font-semibold px-1">⚠️ {passwordError}</p>
+                        <p className="text-red-500 text-sm font-medium px-1">
+                            ⚠️ {passwordError}
+                        </p>
                     )}
 
-                    <div className="text-[11px] text-slate-500 text-center px-2">
-                        By registering, you agree to our <span className="text-teal-600 font-semibold hover:underline cursor-pointer">Terms</span> and <span className="text-teal-600 font-semibold hover:underline cursor-pointer">Privacy Policy</span>
-                    </div>
+                    {/* Terms */}
+                    <p className="text-xs text-center text-slate-500 leading-relaxed">
+                        By continuing you agree to our{" "}
+                        <span className="text-cyan-600 font-semibold hover:underline cursor-pointer">
+                            Terms
+                        </span>{" "}
+                        and{" "}
+                        <span className="text-cyan-600 font-semibold hover:underline cursor-pointer">
+                            Privacy Policy
+                        </span>
+                    </p>
 
-                    <button type="submit" className="w-full bg-[#00a3b1] hover:bg-[#008b98] text-white font-semibold py-3.5 rounded-xl transition-all shadow-md flex flex-col items-center justify-center">
-                        <span className="text-sm font-bold flex items-center gap-1">Register <FiCheckCircle /></span>
-                        <span className="text-[10px] font-normal opacity-90">Start your journey with DocAppoint</span>
+                    {/* Button */}
+                    <button
+                        type="submit"
+                        className="w-full bg-[#00667a] hover:bg-[#005464] text-white rounded-2xl py-4 font-bold transition-all shadow-lg hover:shadow-cyan-200/50 active:scale-[0.98]"
+                    >
+                        <div className="flex items-center justify-center gap-2 text-sm uppercase tracking-wide">
+                            Create Account
+                            <FiCheckCircle size={18} />
+                        </div>
+
+                        <p className="text-[11px] mt-1 font-normal opacity-90">
+                            Start your healthcare journey
+                        </p>
                     </button>
                 </form>
 
-                <div className="relative flex py-3 items-center">
-                    <div className="flex-grow border-t border-slate-200"></div>
-                    <span className="flex-shrink mx-4 text-slate-400 text-xs font-semibold uppercase tracking-wider">Or register with</span>
-                    <div className="flex-grow border-t border-slate-200"></div>
+                {/* Divider */}
+                <div className="flex items-center gap-3 my-7">
+                    <div className="flex-1 h-px bg-slate-200"></div>
+
+                    <span className="text-xs uppercase text-slate-400 font-semibold tracking-wider">
+                        Or Continue With
+                    </span>
+
+                    <div className="flex-1 h-px bg-slate-200"></div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => toast.success("Google Signup")} className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 rounded-xl transition-all font-semibold text-sm">
-                        <GoogleIcon size={18} /> Google
+                {/* Social Buttons */}
+                <div className="grid grid-cols-2 gap-4">
+
+                    <button
+                        type="button"
+                        onClick={() => toast.success("Google Signup")}
+                        className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 hover:border-cyan-300 text-slate-700 py-3 rounded-2xl transition-all font-semibold text-sm"
+                    >
+                        <FcGoogle size={20} />
+                        Google
                     </button>
-                    <button onClick={() => toast.success("GitHub Signup")} className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 rounded-xl transition-all font-semibold text-sm">
-                        <FaGithub size={18} /> GitHub
+
+                    <button
+                        type="button"
+                        onClick={() => toast.success("GitHub Signup")}
+                        className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 hover:border-slate-400 text-slate-700 py-3 rounded-2xl transition-all font-semibold text-sm"
+                    >
+                        <FaGithub size={20} />
+                        GitHub
                     </button>
                 </div>
 
-                <p className="text-center text-sm text-slate-600 mt-5 font-medium">
+                {/* Login */}
+                <p className="text-center mt-7 text-sm text-slate-600">
                     Already have an account?{" "}
-                    <Link href="/login" className="text-teal-600 font-bold hover:underline">
+                    <Link
+                        href="/login"
+                        className="text-cyan-600 font-bold hover:underline"
+                    >
                         Login
                     </Link>
                 </p>
