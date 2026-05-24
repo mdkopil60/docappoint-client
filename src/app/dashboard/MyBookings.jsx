@@ -2,158 +2,252 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FiEdit2, FiTrash2, FiX, FiCalendar, FiClock } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 
 export default function MyBookings() {
     const [bookings, setBookings] = useState([]);
-    const [selectedBooking, setSelectedBooking] = useState(null);
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [editData, setEditData] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        const loadBookings = async () => {
-            try {
-                const res = await fetch("http://localhost:5000/bookings");
-                const data = await res.json();
-                setBookings(data);
-            } catch (error) {
-                toast.error("Failed to load bookings");
-            }
+        const load = async () => {
+            const res = await fetch("http://localhost:5000/bookings");
+            const data = await res.json();
+            setBookings(data);
         };
-
-        loadBookings();
+        load();
     }, []);
 
- 
     const handleDelete = async (id) => {
-        const proceed = window.confirm("Are you sure?");
-        if (!proceed) return;
+        const ok = confirm("Are you sure?");
+        if (!ok) return;
 
-        try {
+        const res = await fetch(`http://localhost:5000/booking/${id}`, {
+            method: "DELETE",
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
             setBookings(bookings.filter((b) => b._id !== id));
-            toast.success("Deleted successfully");
-        } catch (error) {
-            toast.error("Delete failed");
+            toast.success("Appointment deleted successfully!");
         }
     };
 
-    // OPEN UPDATE
-    const openUpdateModal = (booking) => {
-        setSelectedBooking(booking);
-        setIsUpdateModalOpen(true);
+    const openEdit = (booking) => {
+        setEditData({ ...booking });
+        setIsOpen(true);
     };
 
-    // UPDATE
-    const handleUpdateSubmit = async (e) => {
+    const handleUpdate = async (e) => {
         e.preventDefault();
 
-        try {
-            // await fetch(`http://localhost:5000/bookings/${selectedBooking._id}`, {
-            //     method: "PUT",
-            //     headers: { "Content-Type": "application/json" },
-            //     body: JSON.stringify(selectedBooking),
-            // });
+        const res = await fetch(
+            `http://localhost:5000/booking/${editData._id}`,
+            {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    patientName: editData.patientName,
+                    phone: editData.phone,
+                    gender: editData.gender,
+                    appointmentDate: editData.appointmentDate,
+                    appointmentTime: editData.appointmentTime,
+                }),
+            }
+        );
 
+        const data = await res.json();
+
+        if (data.success) {
             setBookings(
                 bookings.map((b) =>
-                    b._id === selectedBooking._id ? selectedBooking : b
+                    b._id === editData._id ? editData : b
                 )
             );
 
-            setIsUpdateModalOpen(false);
-            toast.success("Updated successfully");
-        } catch (error) {
-            toast.error("Update failed");
+            setIsOpen(false);
+            toast.success("Appointment updated successfully!");
         }
     };
 
     return (
-        <div className="space-y-6">
+        <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
 
             {/* HEADER */}
             <div>
-                <h3 className="text-2xl font-bold">My Bookings</h3>
-                <p className="text-gray-500">Manage appointments</p>
+                <h2 className="text-3xl font-bold text-gray-800">
+                    My Bookings
+                </h2>
+                <p className="text-gray-500">
+                    Manage your appointments easily
+                </p>
             </div>
 
             {/* CARDS */}
             <div className="grid md:grid-cols-2 gap-6">
-                {bookings.map((booking) => (
-                    <div key={booking._id} className="bg-white p-5 rounded-xl shadow">
 
-                        <h4 className="font-bold">{booking.doctorName}</h4>
+                {bookings.map((b) => (
+                    <div
+                        key={b._id}
+                        className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 border border-gray-100"
+                    >
 
-                        <p className="text-sm text-gray-500">
-                            Patient: {booking.userEmail}
+                        {/* DOCTOR */}
+                        <h3 className="text-xl font-bold text-gray-800">
+                            {b.doctorName}
+                        </h3>
+
+                        <p className="text-sm text-gray-500 mt-1">
+                            {b.userEmail}
                         </p>
 
-                        <div className="flex gap-3 mt-3 text-sm">
-                            <span>
-                                📅 {booking.appointmentDate}
+                        {/* INFO BADGES */}
+                        <div className="flex flex-wrap gap-2 mt-4">
+
+                            <span className="px-3 py-1 text-xs rounded-full bg-blue-50 text-blue-600">
+                                👤 {b.patientName}
                             </span>
-                            <span>
-                                ⏰ {booking.appointmentTime}
+
+                            <span className="px-3 py-1 text-xs rounded-full bg-green-50 text-green-600">
+                                🧑‍⚕️ {b.gender}
                             </span>
+
+                            <span className="px-3 py-1 text-xs rounded-full bg-purple-50 text-purple-600">
+                                📅 {b.appointmentDate}
+                            </span>
+
+                            <span className="px-3 py-1 text-xs rounded-full bg-orange-50 text-orange-600">
+                                ⏰ {b.appointmentTime}
+                            </span>
+
                         </div>
 
                         {/* ACTIONS */}
-                        <div className="flex gap-3 mt-4">
+                        <div className="flex gap-3 mt-5">
+
                             <button
-                                onClick={() => openUpdateModal(booking)}
-                                className="bg-blue-100 px-3 py-1 rounded"
+                                onClick={() => openEdit(b)}
+                                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl text-sm font-medium transition"
                             >
                                 Update
                             </button>
 
                             <button
-                                onClick={() => handleDelete(booking._id)}
-                                className="bg-red-100 px-3 py-1 rounded"
+                                onClick={() => handleDelete(b._id)}
+                                className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl text-sm font-medium transition"
                             >
                                 Delete
                             </button>
+
                         </div>
                     </div>
                 ))}
+
             </div>
 
             {/* MODAL */}
-            {isUpdateModalOpen && selectedBooking && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-xl w-[400px]">
+            {isOpen && editData && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
 
-                        <button onClick={() => setIsUpdateModalOpen(false)}>
-                            <FiX />
+                    <div className="bg-white w-full max-w-md p-6 rounded-2xl relative shadow-2xl animate-fadeIn">
+
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="absolute right-4 top-4 text-gray-500 hover:text-red-500"
+                        >
+                            <FiX size={20} />
                         </button>
 
-                        <form onSubmit={handleUpdateSubmit}>
+                        <h3 className="text-xl font-bold mb-4 text-gray-800">
+                            Edit Appointment
+                        </h3>
+
+                        <form onSubmit={handleUpdate} className="space-y-3">
+
+                            {/* READ ONLY */}
+                            <input
+                                value={editData.doctorName}
+                                disabled
+                                className="w-full p-3 border rounded-lg bg-gray-100 text-gray-500"
+                            />
+
+                            <input
+                                value={editData.userEmail}
+                                disabled
+                                className="w-full p-3 border rounded-lg bg-gray-100 text-gray-500"
+                            />
+
+                            {/* EDITABLE */}
+                            <input
+                                placeholder="Patient Name"
+                                value={editData.patientName}
+                                onChange={(e) =>
+                                    setEditData({
+                                        ...editData,
+                                        patientName: e.target.value,
+                                    })
+                                }
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            />
+
+                            <input
+                                placeholder="Phone"
+                                value={editData.phone}
+                                onChange={(e) =>
+                                    setEditData({
+                                        ...editData,
+                                        phone: e.target.value,
+                                    })
+                                }
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            />
+
+                            <select
+                                value={editData.gender}
+                                onChange={(e) =>
+                                    setEditData({
+                                        ...editData,
+                                        gender: e.target.value,
+                                    })
+                                }
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            >
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
 
                             <input
                                 type="date"
-                                value={selectedBooking.appointmentDate}
+                                value={editData.appointmentDate}
                                 onChange={(e) =>
-                                    setSelectedBooking({
-                                        ...selectedBooking,
+                                    setEditData({
+                                        ...editData,
                                         appointmentDate: e.target.value,
                                     })
                                 }
-                                className="border w-full p-2 mt-2"
+                                className="w-full p-3 border rounded-lg"
                             />
 
                             <input
                                 type="time"
-                                value={selectedBooking.appointmentTime}
+                                value={editData.appointmentTime}
                                 onChange={(e) =>
-                                    setSelectedBooking({
-                                        ...selectedBooking,
+                                    setEditData({
+                                        ...editData,
                                         appointmentTime: e.target.value,
                                     })
                                 }
-                                className="border w-full p-2 mt-2"
+                                className="w-full p-3 border rounded-lg"
                             />
 
-                            <button className="bg-green-600 text-white w-full mt-3 p-2">
-                                Save
+                            <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium transition">
+                                Save Changes
                             </button>
+
                         </form>
+
                     </div>
                 </div>
             )}
