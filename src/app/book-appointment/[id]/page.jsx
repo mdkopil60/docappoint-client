@@ -19,6 +19,7 @@ const BookAppointmentPage = async ({ params }) => {
         <div className="min-h-screen bg-gray-100 py-16 px-4">
 
             <AppointmentForm doctor={doctor} />
+            
 
         </div>
     );

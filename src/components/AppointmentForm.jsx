@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const AppointmentForm = ({ doctor }) => {
+
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -21,29 +22,17 @@ const AppointmentForm = ({ doctor }) => {
             appointmentDate: form.appointmentDate.value,
             appointmentTime: form.appointmentTime.value,
         };
-
-        try {
-            const res = await fetch("/api/appointments", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(bookingData),
-            });
-
-            const data = await res.json();
-
-            if (data?.success) {
-                toast.success("Appointment booked successfully!");
-                form.reset();
-            } else {
-                toast.error("Something went wrong");
-            }
-        } catch (error) {
-            toast.error("Failed to book appointment");
-        }
-
-        setLoading(false);
+        const res =await fetch('http://localhost:5000/booking', {
+            method: "POST",
+            headers: {
+                'content-type':'application/json'
+            },
+            body: JSON.stringify(bookingData)
+        })
+        const data = await res.json();
+        toast.success("Your Booking Success")
+     
+       
     };
 
     return (
