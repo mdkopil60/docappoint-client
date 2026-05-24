@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
+
 const Navbar = () => {
     const { data: session } = authClient.useSession();
     const user = session?.user;
@@ -162,7 +163,7 @@ const Navbar = () => {
                                 variant="bordered"
                                 className="border-cyan-500 text-cyan-500"
                             >
-                                Logout
+                               Logout
                             </Button>
                         </div>
                     ) : (

@@ -1,20 +1,7 @@
-import { Spinner } from "@heroui/react";
-
-const Loading = () => {
+export default function LoadingSpinner() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-white">
-
-            <Spinner
-                size="lg"
-                color="primary"
-            />
-
-            <p className="text-slate-500 font-medium animate-pulse">
-                Loading...
-            </p>
-
+        <div className="flex items-center justify-center min-h-[300px]">
+            <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
-};
-
-export default Loading;
+}
