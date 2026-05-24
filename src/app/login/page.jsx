@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -38,6 +39,11 @@ export default function LoginPage() {
             toast.error("Invalid Email or Password");
         }
     };
+    const handleGoogleSign = async () => {
+        await authClient.signIn.social({
+            provider: "google"
+        })
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-700 via-sky-800 to-blue-900 px-4">
@@ -48,7 +54,7 @@ export default function LoginPage() {
                 {/* Heading */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-white">
-                        Welcome Back 
+                        Welcome Back
                     </h1>
 
                     <p className="text-slate-200 mt-2 text-sm">
@@ -146,7 +152,7 @@ export default function LoginPage() {
                 <div className="grid grid-cols-2 gap-4">
 
                     <button
-                        onClick={() => toast.success("Google Login")}
+                       onClick={handleGoogleSign}
                         className="flex items-center justify-center gap-2 bg-white py-3 rounded-xl font-semibold hover:scale-105 transition-all"
                     >
                         <FcGoogle size={22} />

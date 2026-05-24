@@ -1,13 +1,10 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-
 import {
     FiUser,
     FiMail,
@@ -17,37 +14,27 @@ import {
     FiEyeOff,
     FiCheckCircle,
 } from "react-icons/fi";
-
 import { authClient } from "@/lib/auth-client";
-
 export default function RegisterPage() {
     const router = useRouter();
-
     const [showPassword, setShowPassword] = useState(false);
-
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         image: "",
         password: "",
     });
-
     const [loading, setLoading] = useState(false);
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
-
     const onSubmit = async (e) => {
         e.preventDefault();
-
         setLoading(true);
-
         try {
             // Password Validation
             if (formData.password.length < 6) {
@@ -55,25 +42,20 @@ export default function RegisterPage() {
                 setLoading(false);
                 return;
             }
-
             const { data, error } = await authClient.signUp.email({
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
                 image: formData.image,
             });
-
             console.log(data);
             console.log(error);
-
             if (error) {
                 toast.error(error.message || "Registration Failed");
                 setLoading(false);
                 return;
             }
-
             toast.success("Account Created Successfully");
-
             router.push("/");
         } catch (err) {
             console.log(err);
@@ -82,6 +64,11 @@ export default function RegisterPage() {
             setLoading(false);
         }
     };
+    const handleGoogleSign = async () => {
+        await authClient.signIn.social({
+            provider: "google"
+        })
+    }
 
     return (
         <div className="min-h-screen bg-[#00839b] flex items-center justify-center px-4 py-10 relative overflow-hidden">
@@ -221,8 +208,8 @@ export default function RegisterPage() {
                 {/* Social */}
                 <div className="grid grid-cols-2 gap-4">
                     <button
+                    onClick={handleGoogleSign}
                         type="button"
-                        onClick={() => toast.success("Google Signup")}
                         className="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 py-3 rounded-2xl transition-all font-semibold text-sm"
                     >
                         <FcGoogle size={20} />
