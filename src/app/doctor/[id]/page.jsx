@@ -1,15 +1,24 @@
-// app/doctor/[id]/page.jsx
 
+
+import { auth } from "@/lib/auth";
 import { Button } from "@heroui/react";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 const DocAppointDetailsPage = async ({ params }) => {
 
     const { id } = await params;
+    const token = await auth.api.getToken({
+        headers: await headers()
+    })
+    console.log(token);
 
     // Fetch Doctor Data
     const res = await fetch(
-        `http://localhost:5000/all-appointments/${id}`,
+        `http://localhost:5000/all-appointments/${id}`, 
+        {headers: {
+            authorization: `Bearer ${token}`
+        }},
         {
             cache: "no-store",
         }
