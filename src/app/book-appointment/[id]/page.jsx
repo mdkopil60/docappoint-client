@@ -6,7 +6,7 @@ const BookAppointmentPage = async ({ params }) => {
     const { id } = await params;
 
     const res = await fetch(
-        `http://localhost:5000/all-appointments/${id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/all-appointments/${id}`,
         {
             cache: "no-store",
         }

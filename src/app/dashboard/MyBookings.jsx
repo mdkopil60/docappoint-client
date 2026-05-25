@@ -11,7 +11,7 @@ export default function MyBookings() {
 
     useEffect(() => {
         const load = async () => {
-            const res = await fetch("http://localhost:5000/bookings");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/bookings`);
             const data = await res.json();
             setBookings(data);
         };
@@ -22,7 +22,7 @@ export default function MyBookings() {
         const ok = confirm("Are you sure?");
         if (!ok) return;
 
-        const res = await fetch(`http://localhost:5000/booking/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${id}`, {
             method: "DELETE",
         });
 
@@ -43,7 +43,7 @@ export default function MyBookings() {
         e.preventDefault();
 
         const res = await fetch(
-            `http://localhost:5000/booking/${editData._id}`,
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${editData._id}`,
             {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },

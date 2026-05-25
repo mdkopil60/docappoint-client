@@ -3,7 +3,7 @@ import DocappointCard from "@/components/DocappointCard";
 const AllAppointmentsPage = async () => {
 
     const res = await fetch(
-        "http://localhost:5000/all-appointments",
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/all-appointments`,
         {
             cache: "no-store",
         }
