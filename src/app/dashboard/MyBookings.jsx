@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FiX } from "react-icons/fi";
@@ -70,7 +69,6 @@ export default function MyBookings() {
             toast.success("Appointment updated successfully!");
         }
     };
-
     return (
         <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
 
