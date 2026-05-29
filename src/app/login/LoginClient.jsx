@@ -33,8 +33,21 @@ export default function LoginClient() {
         e.preventDefault();
 
         try {
+            const res = await authClient.signIn.email({
+                email: formData.email,
+                password: formData.password,
+            });
+
+            if (res.error) {
+                toast.error(res.error.message || "Login failed");
+                return;
+            }
+
             toast.success("Login Successful");
+
             router.push(from);
+            router.refresh();
+
         } catch (error) {
             toast.error("Invalid Email or Password");
         }
