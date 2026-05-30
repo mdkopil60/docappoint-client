@@ -33,7 +33,7 @@ export default function TopRatedDoctors() {
     return (
         <div className="max-w-6xl mx-auto py-14 px-4">
             <h2 className="text-4xl font-extrabold text-center mb-12">
-                ⭐ Top Rated Doctors
+                Top Rated Doctors
             </h2>
 
             <div className="grid md:grid-cols-3 gap-8">

@@ -17,7 +17,7 @@ export default function SpecialtiesSection() {
         <section className="py-20 bg-white dark:bg-surface-900">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
-                    <span className="inline-block text-primary-600 font-semibold text-sm tracking-wider uppercase mb-3">
+                    <span className="inline-block text-primary-600 font-semibold text-xl tracking-wider uppercase mb-3">
                         Browse by Specialty
                     </span>
                     <h2 className="section-heading mb-4">Find the Right Specialist</h2>
